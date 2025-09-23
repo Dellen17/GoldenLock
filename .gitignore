@@ -1,0 +1,83 @@
+# Python/Django
+__pycache__/
+*.py[cod]
+*.so
+.Python
+*.pyc
+db.sqlite3
+*.sqlite3
+*.db
+.psql
+env/
+ll_gold/
+venv/
+ENV/
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Django static and media
+/static/
+/media/
+/backend/staticfiles/
+/backend/mediafiles/
+
+# React/Node
+/frontend/node_modules/
+/frontend/.pnp
+/frontend/.pnp.js
+/frontend/coverage/
+/frontend/build/
+/frontend/dist/
+/frontend/.env
+/frontend/.env.local
+/frontend/.env.development.local
+/frontend/.env.test.local
+/frontend/.env.production.local
+
+# VS Code
+.vscode/
+*.code-workspace
+.history/
+
+# IDE
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Local development settings
+local_settings.py
+
+# Package directories
+dist/
+build/
+*.egg-info/
+
+# Coverage reports
+htmlcov/
+.coverage
+.coverage.*
+coverage.xml
+*.cover
+
+# Unit test reports
+TEST*.xml
+
+# Dependency directories
+node_modules/
+
+# Debug logs
+debug.log
+
+# Production build
+/build
