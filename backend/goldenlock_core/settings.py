@@ -1,23 +1,23 @@
+import os
 from pathlib import Path
+from dotenv import load_dotenv
+
+# Load environment variables
+env_path = Path('.') / ('.env.prod' if os.getenv('ENVIRONMENT') == 'prod' else '.env.dev')
+load_dotenv(dotenv_path=env_path)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
-
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-#q$r_i=_u6bjm1$nn-4e5rnhu8(-e6pl@195cn5*1#sckycc)%'
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('ENVIRONMENT') == 'dev'
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = ['*'] if os.getenv('ENVIRONMENT') == 'dev' else ['.onrender.com', 'localhost']
 
 # Application definition
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -28,15 +28,17 @@ INSTALLED_APPS = [
     # Third Party Apps
     'rest_framework',
     'rest_framework_simplejwt',
+    'corsheaders',
     # Local Apps
     'accounts',
 ]
 
-# This points to the custom user model we created
 AUTH_USER_MODEL = 'accounts.User'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -64,25 +66,19 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'goldenlock_core.wsgi.application'
 
-
 # Database
-# https://docs.djangoproject.com/en/5.2/ref/settings/#databases
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'goldenlock_db',
-        'USER': 'goldenlock_user',
-        'PASSWORD': 'Dellen42!',
-        'HOST': 'localhost',
-        'PORT': '5432',
+        'NAME': os.getenv('DB_NAME'),
+        'USER': os.getenv('DB_USER'),
+        'PASSWORD': os.getenv('DB_PASSWORD'),
+        'HOST': os.getenv('DB_HOST'),
+        'PORT': os.getenv('DB_PORT'),
     }
 }
 
-
 # Password validation
-# https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
-
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -98,35 +94,24 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
-# https://docs.djangoproject.com/en/5.2/topics/i18n/
-
 LANGUAGE_CODE = 'en-us'
-
 TIME_ZONE = 'UTC'
-
 USE_I18N = True
-
 USE_TZ = True
 
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.2/howto/static-files/
-
-STATIC_URL = 'static/'
+# Static files
+STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Default primary key field type
-# https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
-
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # REST Framework settings
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        # Use our custom class that checks for cookies
         'accounts.authentication.CustomJWTAuthentication',
-        # Keep this as a fallback (e.g., for API testing with headers)
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     )
 }
@@ -134,14 +119,18 @@ REST_FRAMEWORK = {
 # Simple JWT settings
 from datetime import timedelta
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),
-    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
-    
-    # Cookie settings
-    "AUTH_COOKIE": 'access_token',       # Cookie name for access token
-    "AUTH_COOKIE_REFRESH": 'refresh_token', # Cookie name for refresh token
-    "AUTH_COOKIE_SECURE": False,         # True in production (HTTPS only), False in development for HTTP
-    "AUTH_COOKIE_HTTP_ONLY": True,       # True = inaccessible to JavaScript (httpOnly)
-    "AUTH_COOKIE_PATH": "/",             # The path the cookie is valid for
-    "AUTH_COOKIE_SAMESITE": "Lax",       # Protection against CSRF attacks
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    'AUTH_COOKIE': 'access_token',
+    'AUTH_COOKIE_REFRESH': 'refresh_token',
+    'AUTH_COOKIE_SECURE': os.getenv('ENVIRONMENT') == 'prod',
+    'AUTH_COOKIE_HTTP_ONLY': True,
+    'AUTH_COOKIE_PATH': '/',
+    'AUTH_COOKIE_SAMESITE': 'Lax',
 }
+
+# CORS settings
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:3000' if os.getenv('ENVIRONMENT') == 'dev' else 'https://goldenlock.vercel.app',
+]
+CORS_ALLOW_CREDENTIALS = True
