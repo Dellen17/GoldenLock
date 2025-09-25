@@ -2,7 +2,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-class DebugRequestMiddleware:
+class CookieDebugMiddleware:  # Changed from DebugRequestMiddleware to match settings
     def __init__(self, get_response):
         self.get_response = get_response
 
