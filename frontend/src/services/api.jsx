@@ -7,20 +7,11 @@ const api = axios.create({
 
 api.interceptors.request.use(
   (config) => {
-    const cookies = document.cookie.split('; ').reduce((acc, cookie) => {
-      const [name, value] = cookie.split('=');
-      acc[name] = value;
-      return acc;
-    }, {});
-    if (cookies.access_token) {
-      config.headers['Cookie'] = `access_token=${cookies.access_token}`;
-    }
     console.log('Request config:', {
       url: config.url,
       method: config.method,
       headers: config.headers,
-      withCredentials: config.withCredentials,
-      cookies: document.cookie
+      withCredentials: config.withCredentials
     });
     return config;
   },
