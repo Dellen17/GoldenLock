@@ -13,7 +13,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv('ENVIRONMENT') == 'dev'
+DEBUG = True
 
 ALLOWED_HOSTS = ['*'] if os.getenv('ENVIRONMENT') == 'dev' else ['.onrender.com', 'localhost']
 
