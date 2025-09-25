@@ -5,29 +5,26 @@ const api = axios.create({
   withCredentials: true,
   headers: {
     'Content-Type': 'application/json',
-    // Add this to help with CORS preflight
     'Accept': 'application/json'
-  }
+  },
+  xsrfCookieName: 'csrftoken',
+  xsrfHeaderName: 'X-CSRFToken'
 });
 
-// Enhanced error logging
+// Add request interceptor for debugging
 api.interceptors.request.use(
   (config) => {
-    // Only log in development
     if (import.meta.env.DEV) {
-      console.log('Request:', {
+      console.log('Request Config:', {
         url: config.url,
         method: config.method,
-        headers: config.headers,
-        cookies: document.cookie
+        withCredentials: config.withCredentials,
+        headers: config.headers
       });
     }
     return config;
   },
-  (error) => {
-    console.error('Request error:', error);
-    return Promise.reject(error);
-  }
+  (error) => Promise.reject(error)
 );
 
 api.interceptors.response.use(
@@ -43,8 +40,6 @@ api.interceptors.response.use(
   },
   (error) => {
     if (error.response?.status === 401) {
-      // Use proper navigation instead of window.location
-      // Import and use navigate from react-router-dom
       window.location.href = '/login';
     }
     return Promise.reject(error);

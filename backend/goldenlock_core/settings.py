@@ -46,6 +46,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'accounts.middleware.CookieDebugMiddleware',
+    'accounts.middleware.DebugRequestMiddleware',
 ]
 
 ROOT_URLCONF = 'goldenlock_core.urls'
@@ -124,11 +125,11 @@ SIMPLE_JWT = {
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
     'AUTH_COOKIE': 'access_token',
     'AUTH_COOKIE_REFRESH': 'refresh_token',
-    'AUTH_COOKIE_DOMAIN': None,  # Add this
-    'AUTH_COOKIE_SECURE': True,  # Always use Secure in production
+    'AUTH_COOKIE_SECURE': True,
     'AUTH_COOKIE_HTTP_ONLY': True,
     'AUTH_COOKIE_PATH': '/',
-    'AUTH_COOKIE_SAMESITE': 'Lax',
+    'AUTH_COOKIE_SAMESITE': 'None',  # Changed from 'Lax' to 'None'
+    'AUTH_COOKIE_DOMAIN': '.onrender.com',  # Add this for production
 }
 
 # CORS settings
@@ -137,8 +138,10 @@ CORS_ALLOWED_ORIGINS = [
     'https://goldenlock.vercel.app'
 ]
 CORS_ALLOW_CREDENTIALS = True
+CORS_EXPOSE_HEADERS = ['Content-Type', 'X-CSRFToken']
 
-# Security settings
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-SESSION_COOKIE_SECURE = True
+# Cookie settings
 CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SAMESITE = 'None'  # Required for cross-site cookies
+SESSION_COOKIE_SAMESITE = 'None'  # Required for cross-site cookies

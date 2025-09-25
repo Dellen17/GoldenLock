@@ -72,61 +72,30 @@ class CustomTokenObtainPairView(TokenObtainPairView):
         response = super().post(request, *args, **kwargs)
         
         if response.status_code == 200:
-            # Get user data
-            user = User.objects.get(email=request.data['email'])
+            tokens = response.data
             
-            # Add user data to response
-            response.data.update({
-                'email': user.email,
-                'username': user.username,
-                'role': user.role
-            })
-            
-            access_token = response.data.get('access')
-            refresh_token = response.data.get('refresh')
-            
-            # Set the access token as an httpOnly cookie
             response.set_cookie(
-                key=settings.SIMPLE_JWT['AUTH_COOKIE'],
-                value=access_token,
-                expires=datetime.utcnow() + settings.SIMPLE_JWT['ACCESS_TOKEN_LIFETIME'],
+                settings.SIMPLE_JWT['AUTH_COOKIE'],
+                tokens['access'],
+                max_age=settings.SIMPLE_JWT['ACCESS_TOKEN_LIFETIME'].total_seconds(),
                 secure=settings.SIMPLE_JWT['AUTH_COOKIE_SECURE'],
                 httponly=settings.SIMPLE_JWT['AUTH_COOKIE_HTTP_ONLY'],
                 samesite=settings.SIMPLE_JWT['AUTH_COOKIE_SAMESITE'],
-                path=settings.SIMPLE_JWT['AUTH_COOKIE_PATH'],
+                domain=settings.SIMPLE_JWT['AUTH_COOKIE_DOMAIN'],
+                path=settings.SIMPLE_JWT['AUTH_COOKIE_PATH']
             )
-            # Set the refresh token as an httpOnly cookie
+            
             response.set_cookie(
-                key=settings.SIMPLE_JWT['AUTH_COOKIE_REFRESH'],
-                value=refresh_token,
-                expires=datetime.utcnow() + settings.SIMPLE_JWT['REFRESH_TOKEN_LIFETIME'],
+                settings.SIMPLE_JWT['AUTH_COOKIE_REFRESH'],
+                tokens['refresh'],
+                max_age=settings.SIMPLE_JWT['REFRESH_TOKEN_LIFETIME'].total_seconds(),
                 secure=settings.SIMPLE_JWT['AUTH_COOKIE_SECURE'],
                 httponly=settings.SIMPLE_JWT['AUTH_COOKIE_HTTP_ONLY'],
                 samesite=settings.SIMPLE_JWT['AUTH_COOKIE_SAMESITE'],
-                path=settings.SIMPLE_JWT['AUTH_COOKIE_PATH'],
+                domain=settings.SIMPLE_JWT['AUTH_COOKIE_DOMAIN'],
+                path=settings.SIMPLE_JWT['AUTH_COOKIE_PATH']
             )
             
-            # Log the successful login activity
-            # Get the user from the validated token
-            from rest_framework_simplejwt.tokens import AccessToken
-            access_token_obj = AccessToken(access_token)
-            user_id = access_token_obj['user_id']
-            user = User.objects.get(id=user_id)
-            
-            # Get the client's IP address
-            ip_address = self.get_client_ip(request)
-            
-            # Create login activity record
-            LoginActivity.objects.create(
-                user=user,
-                ip_address=ip_address,
-                timestamp=timezone.now()
-            )
-            
-            # Remove the tokens from the response body for security
-            del response.data['access']
-            del response.data['refresh']
-        
         return response
 
     def get_client_ip(self, request):
