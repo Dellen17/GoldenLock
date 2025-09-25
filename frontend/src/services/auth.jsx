@@ -6,30 +6,18 @@ const createAuthService = (toast) => {
 
   return {
     login: withAuthErrorHandling(async (email, password) => {
-      try {
-        const response = await api.post('/api/auth/login/', { email, password });
-        console.log('Login response:', {
-          status: response.status,
-          data: response.data,
-          headers: response.headers,
-          cookies: document.cookie
-        });
-        if (response.data) {
-          localStorage.setItem('user', JSON.stringify({
-            email: response.data.email,
-            username: response.data.username,
-            role: response.data.role
-          }));
-        }
-        return response.data;
-      } catch (error) {
-        console.error('Login error:', {
-          status: error.response?.status,
-          data: error.response?.data,
-          message: error.message
-        });
-        throw error;
+      const response = await api.post('/api/auth/login/', { email, password });
+      
+      // Remove console.log of sensitive data
+      if (response.data) {
+        localStorage.setItem('user', JSON.stringify({
+          email: response.data.email,
+          username: response.data.username,
+          role: response.data.role
+        }));
       }
+      
+      return response.data;
     }),
 
     register: withAuthErrorHandling(async (userData) => {
@@ -51,22 +39,11 @@ const createAuthService = (toast) => {
     }),
 
     getProfile: withAuthErrorHandling(async () => {
-      try {
-        const response = await api.get('/api/user/profile/');
-        console.log('Profile response:', {
-          status: response.status,
-          data: response.data,
-          headers: response.headers
-        });
-        return response.data;
-      } catch (error) {
-        console.error('Profile error:', {
-          status: error.response?.status,
-          data: error.response?.data,
-          message: error.message
-        });
-        throw error;
-      }
+      const response = await api.get('/api/user/profile/', {
+        // Ensure cookies are sent
+        withCredentials: true
+      });
+      return response.data;
     }),
 
     getProtectedData: withAuthErrorHandling(async () => {
