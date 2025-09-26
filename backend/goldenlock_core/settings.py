@@ -13,9 +13,26 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('ENVIRONMENT') == 'dev'
 
-ALLOWED_HOSTS = ['*'] if os.getenv('ENVIRONMENT') == 'dev' else ['.onrender.com', 'localhost']
+# Update ALLOWED_HOSTS to be more secure
+ALLOWED_HOSTS = ['.onrender.com', 'localhost', '127.0.0.1'] if os.getenv('ENVIRONMENT') == 'prod' else ['*']
+
+# Add security headers
+SECURE_BROWSER_XSS_FILTER = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
+X_FRAME_OPTIONS = 'DENY'
+SECURE_HSTS_SECONDS = 31536000  # 1 year
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = True
+
+# Ensure SSL is used
+SECURE_SSL_REDIRECT = os.getenv('ENVIRONMENT') == 'prod'
+
+# Session security
+SESSION_COOKIE_AGE = 1800  # 30 minutes
+SESSION_SAVE_EVERY_REQUEST = True
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 # Application definition
 INSTALLED_APPS = [
