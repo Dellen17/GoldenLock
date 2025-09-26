@@ -6,29 +6,25 @@ const api = axios.create({
   headers: {
     'Content-Type': 'application/json',
     'Accept': 'application/json'
-  },
-  xsrfCookieName: 'csrftoken',
-  xsrfHeaderName: 'X-CSRFToken'
+  }
 });
 
-// Add request interceptor for debugging
-api.interceptors.request.use(
-  (config) => {
-    if (import.meta.env.DEV) {
-      console.log('Request Config:', {
-        url: config.url,
-        method: config.method,
-        withCredentials: config.withCredentials,
-        headers: config.headers
-      });
-    }
-    return config;
-  },
-  (error) => Promise.reject(error)
-);
+// Add request debugging
+api.interceptors.request.use(request => {
+  if (import.meta.env.DEV) {
+    console.log('Request:', {
+      url: request.url,
+      method: request.method,
+      withCredentials: request.withCredentials,
+      headers: request.headers
+    });
+  }
+  return request;
+});
 
+// Add response debugging
 api.interceptors.response.use(
-  (response) => {
+  response => {
     if (import.meta.env.DEV) {
       console.log('Response:', {
         status: response.status,
@@ -38,9 +34,12 @@ api.interceptors.response.use(
     }
     return response;
   },
-  (error) => {
+  error => {
     if (error.response?.status === 401) {
-      window.location.href = '/login';
+      // Use proper navigation instead of window.location
+      if (window.location.pathname !== '/login') {
+        window.location.href = '/login';
+      }
     }
     return Promise.reject(error);
   }

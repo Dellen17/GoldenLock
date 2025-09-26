@@ -124,11 +124,11 @@ SIMPLE_JWT = {
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
     'AUTH_COOKIE': 'access_token',
     'AUTH_COOKIE_REFRESH': 'refresh_token',
+    'AUTH_HEADER_TYPES': ('Bearer',),
     'AUTH_COOKIE_SECURE': True,
     'AUTH_COOKIE_HTTP_ONLY': True,
     'AUTH_COOKIE_PATH': '/',
-    'AUTH_COOKIE_SAMESITE': 'None',  # Changed from 'Lax' to 'None'
-    'AUTH_COOKIE_DOMAIN': '.onrender.com',  # Add this for production
+    'AUTH_COOKIE_SAMESITE': 'None',
 }
 
 # CORS settings
@@ -137,10 +137,10 @@ CORS_ALLOWED_ORIGINS = [
     'https://goldenlock.vercel.app'
 ]
 CORS_ALLOW_CREDENTIALS = True
-CORS_EXPOSE_HEADERS = ['Content-Type', 'X-CSRFToken']
+CORS_EXPOSE_HEADERS = ['Set-Cookie']
 
-# Cookie settings
-CSRF_COOKIE_SECURE = True
+# Security settings
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SAMESITE = 'None'  # Required for cross-site cookies
-SESSION_COOKIE_SAMESITE = 'None'  # Required for cross-site cookies
+CSRF_COOKIE_SECURE = True
+CSRF_TRUSTED_ORIGINS = ['https://goldenlock.vercel.app']

@@ -18,6 +18,9 @@ from rest_framework import status
 from .serializers import UserProfileSerializer, ChangePasswordSerializer
 from rest_framework.exceptions import PermissionDenied
 from django.db import models
+import logging
+
+logger = logging.getLogger(__name__)
 
 class UserRegistrationView(APIView):
     """
@@ -74,28 +77,39 @@ class CustomTokenObtainPairView(TokenObtainPairView):
         if response.status_code == 200:
             tokens = response.data
             
+            # Set access token cookie
             response.set_cookie(
-                settings.SIMPLE_JWT['AUTH_COOKIE'],
-                tokens['access'],
+                key=settings.SIMPLE_JWT['AUTH_COOKIE'],
+                value=tokens['access'],
                 max_age=settings.SIMPLE_JWT['ACCESS_TOKEN_LIFETIME'].total_seconds(),
-                secure=settings.SIMPLE_JWT['AUTH_COOKIE_SECURE'],
-                httponly=settings.SIMPLE_JWT['AUTH_COOKIE_HTTP_ONLY'],
-                samesite=settings.SIMPLE_JWT['AUTH_COOKIE_SAMESITE'],
-                domain=settings.SIMPLE_JWT['AUTH_COOKIE_DOMAIN'],
-                path=settings.SIMPLE_JWT['AUTH_COOKIE_PATH']
+                path='/',
+                secure=True,
+                httponly=True,
+                samesite='None'
             )
             
+            # Set refresh token cookie
             response.set_cookie(
-                settings.SIMPLE_JWT['AUTH_COOKIE_REFRESH'],
-                tokens['refresh'],
+                key=settings.SIMPLE_JWT['AUTH_COOKIE_REFRESH'],
+                value=tokens['refresh'],
                 max_age=settings.SIMPLE_JWT['REFRESH_TOKEN_LIFETIME'].total_seconds(),
-                secure=settings.SIMPLE_JWT['AUTH_COOKIE_SECURE'],
-                httponly=settings.SIMPLE_JWT['AUTH_COOKIE_HTTP_ONLY'],
-                samesite=settings.SIMPLE_JWT['AUTH_COOKIE_SAMESITE'],
-                domain=settings.SIMPLE_JWT['AUTH_COOKIE_DOMAIN'],
-                path=settings.SIMPLE_JWT['AUTH_COOKIE_PATH']
+                path='/',
+                secure=True,
+                httponly=True,
+                samesite='None'
             )
+
+            # Log cookie setting for debugging
+            logger.debug("Setting auth cookies in response")
+            logger.debug(f"Response cookies: {response.cookies}")
             
+            # Remove tokens from response body
+            response.data = {
+                'email': request.user.email,
+                'username': request.user.username,
+                'role': request.user.role
+            }
+
         return response
 
     def get_client_ip(self, request):
