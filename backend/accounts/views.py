@@ -72,45 +72,57 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
 
 class CustomTokenObtainPairView(TokenObtainPairView):
     def post(self, request, *args, **kwargs):
-        response = super().post(request, *args, **kwargs)
-        
-        if response.status_code == 200:
-            tokens = response.data
+        try:
+            # Get the response from parent class
+            response = super().post(request, *args, **kwargs)
             
-            # Set access token cookie
-            response.set_cookie(
-                key=settings.SIMPLE_JWT['AUTH_COOKIE'],
-                value=tokens['access'],
-                max_age=settings.SIMPLE_JWT['ACCESS_TOKEN_LIFETIME'].total_seconds(),
-                path='/',
-                secure=True,
-                httponly=True,
-                samesite='None'
-            )
-            
-            # Set refresh token cookie
-            response.set_cookie(
-                key=settings.SIMPLE_JWT['AUTH_COOKIE_REFRESH'],
-                value=tokens['refresh'],
-                max_age=settings.SIMPLE_JWT['REFRESH_TOKEN_LIFETIME'].total_seconds(),
-                path='/',
-                secure=True,
-                httponly=True,
-                samesite='None'
-            )
+            if response.status_code == 200:
+                tokens = response.data
+                
+                # Set access token cookie
+                response.set_cookie(
+                    key=settings.SIMPLE_JWT['AUTH_COOKIE'],
+                    value=tokens['access'],
+                    max_age=settings.SIMPLE_JWT['ACCESS_TOKEN_LIFETIME'].total_seconds(),
+                    path='/',
+                    secure=True,
+                    httponly=True,
+                    samesite='None'
+                )
+                
+                # Set refresh token cookie
+                response.set_cookie(
+                    key=settings.SIMPLE_JWT['AUTH_COOKIE_REFRESH'],
+                    value=tokens['refresh'],
+                    max_age=settings.SIMPLE_JWT['REFRESH_TOKEN_LIFETIME'].total_seconds(),
+                    path='/',
+                    secure=True,
+                    httponly=True,
+                    samesite='None'
+                )
 
-            # Log cookie setting for debugging
-            logger.debug("Setting auth cookies in response")
-            logger.debug(f"Response cookies: {response.cookies}")
-            
-            # Remove tokens from response body
-            response.data = {
-                'email': request.user.email,
-                'username': request.user.username,
-                'role': request.user.role
-            }
+                # Get user data from serializer
+                serializer = self.get_serializer(data=request.data)
+                serializer.is_valid(raise_exception=True)
+                user = serializer.user
 
-        return response
+                # Return user data instead of tokens
+                response.data = {
+                    'email': user.email,
+                    'username': user.username,
+                    'role': user.role
+                }
+                
+                logger.info(f"Login successful for user: {user.email}")
+                
+            return response
+
+        except Exception as e:
+            logger.error(f"Login error: {str(e)}")
+            return Response(
+                {"detail": "Login failed. Please check your credentials."},
+                status=400
+            )
 
     def get_client_ip(self, request):
         """
