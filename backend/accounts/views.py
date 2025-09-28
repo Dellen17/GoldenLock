@@ -71,11 +71,30 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         return token
 
 class CustomTokenObtainPairView(TokenObtainPairView):
+    def get_client_ip(self, request):
+        x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+        if x_forwarded_for:
+            ip = x_forwarded_for.split(',')[0].strip()
+        else:
+            ip = request.META.get('REMOTE_ADDR')
+        return ip
+
     def post(self, request, *args, **kwargs):
         try:
+            # Get the response from parent class
             response = super().post(request, *args, **kwargs)
             
             if response.status_code == 200:
+                # Get the user from the response data
+                email = request.data.get('email')
+                user = User.objects.get(email=email)
+
+                # Record the login activity
+                LoginActivity.objects.create(
+                    user=user,
+                    ip_address=self.get_client_ip(request)
+                )
+
                 tokens = response.data
                 
                 # Set access token cookie
@@ -102,23 +121,11 @@ class CustomTokenObtainPairView(TokenObtainPairView):
 
                 return response
 
-        except Exception:
+        except Exception as e:
             return Response(
                 {"detail": "Login failed. Please check your credentials."},
                 status=400
             )
-
-    def get_client_ip(self, request):
-        """
-        Extract the client's IP address from the request.
-        Handles various proxy scenarios.
-        """
-        x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
-        if x_forwarded_for:
-            ip = x_forwarded_for.split(',')[0]  # Get the first IP in the chain
-        else:
-            ip = request.META.get('REMOTE_ADDR')  # Direct connection
-        return ip
 
 class UserLogoutView(APIView):
     """
