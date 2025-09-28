@@ -1,59 +1,63 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 const Navigation = ({ userRole, onLogout }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
+  const navRef = useRef(null);
 
   const isActive = (path) => location.pathname === path;
 
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
+
+  const closeMenus = () => {
+    setIsMenuOpen(false);
+  };
+
+  // Close menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (navRef.current && !navRef.current.contains(event.target)) {
+        setIsMenuOpen(false);
+      }
+    };
+
+    if (isMenuOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isMenuOpen]);
+
   return (
-    <nav style={{
-      backgroundColor: '#2c3e50',
-      padding: '1rem 2rem',
-      display: 'flex',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
-    }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: '2rem' }}>
+    <nav className="nav-container" ref={navRef}>
+      <div className="nav-links">
         <Link 
           to="/dashboard" 
-          style={{ 
-            color: 'white', 
-            textDecoration: 'none', 
-            fontSize: '1.5rem', 
-            fontWeight: 'bold' 
-          }}
+          className="nav-brand"
+          onClick={closeMenus}
         >
           GoldenLock
         </Link>
         
-        <div style={{ display: 'flex', gap: '1rem' }}>
+        <div className={`nav-menu ${isMenuOpen ? 'active' : ''}`}>
           <Link 
             to="/dashboard" 
-            style={{ 
-              color: isActive('/dashboard') ? '#3498db' : 'white',
-              textDecoration: 'none',
-              padding: '0.5rem 1rem',
-              borderRadius: '4px',
-              backgroundColor: isActive('/dashboard') ? 'rgba(255,255,255,0.1)' : 'transparent'
-            }}
+            className={`nav-link ${isActive('/dashboard') ? 'active' : ''}`}
+            onClick={closeMenus}
           >
             Dashboard
           </Link>
           
-          {/* Add Profile Link */}
           <Link 
             to="/profile" 
-            style={{ 
-              color: isActive('/profile') ? '#3498db' : 'white',
-              textDecoration: 'none',
-              padding: '0.5rem 1rem',
-              borderRadius: '4px',
-              backgroundColor: isActive('/profile') ? 'rgba(255,255,255,0.1)' : 'transparent'
-            }}
+            className={`nav-link ${isActive('/profile') ? 'active' : ''}`}
+            onClick={closeMenus}
           >
             Profile
           </Link>
@@ -61,13 +65,8 @@ const Navigation = ({ userRole, onLogout }) => {
           {userRole === 'admin' && (
             <Link 
               to="/admin" 
-              style={{ 
-                color: isActive('/admin') ? '#3498db' : 'white',
-                textDecoration: 'none',
-                padding: '0.5rem 1rem',
-                borderRadius: '4px',
-                backgroundColor: isActive('/admin') ? 'rgba(255,255,255,0.1)' : 'transparent'
-              }}
+              className={`nav-link ${isActive('/admin') ? 'active' : ''}`}
+              onClick={closeMenus}
             >
               Admin Panel
             </Link>
@@ -75,23 +74,22 @@ const Navigation = ({ userRole, onLogout }) => {
         </div>
       </div>
 
-      <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-        <span style={{ color: 'white' }}>
+      <div className={`nav-user-section ${isMenuOpen ? 'active' : ''}`}>
+        <span className="nav-user-info">
           {userRole === 'admin' ? '👑 Admin' : '👤 User'}
         </span>
         <button 
           onClick={onLogout}
-          style={{
-            padding: '0.5rem 1rem',
-            backgroundColor: '#e74c3c',
-            color: 'white',
-            border: 'none',
-            borderRadius: '4px',
-            cursor: 'pointer'
-          }}
+          className="nav-logout-btn"
         >
           Logout
         </button>
+      </div>
+
+      <div className={`hamburger ${isMenuOpen ? 'active' : ''}`} onClick={toggleMenu}>
+        <span></span>
+        <span></span>
+        <span></span>
       </div>
     </nav>
   );

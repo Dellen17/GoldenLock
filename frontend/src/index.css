@@ -118,3 +118,258 @@ a:hover {
   border-radius: 4px;
   margin-bottom: 1rem;
 }
+
+/* Navigation Styles */
+.nav-container {
+  background-color: #2c3e50;
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  position: relative;
+}
+
+.nav-brand {
+  color: white;
+  text-decoration: none;
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.nav-menu {
+  display: flex;
+  gap: 1rem;
+}
+
+.nav-link {
+  color: white;
+  text-decoration: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.nav-link:hover {
+  background-color: rgba(255,255,255,0.1);
+}
+
+.nav-link.active {
+  color: #3498db;
+  background-color: rgba(255,255,255,0.1);
+}
+
+.nav-user-section {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.nav-user-info {
+  color: white;
+}
+
+.nav-logout-btn {
+  padding: 0.5rem 1rem;
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.nav-logout-btn:hover {
+  background-color: #c0392b;
+}
+
+/* Hamburger Menu */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  cursor: pointer;
+  padding: 0.5rem;
+}
+
+.hamburger span {
+  width: 25px;
+  height: 3px;
+  background-color: white;
+  margin: 3px 0;
+  transition: 0.3s;
+}
+
+.hamburger.active span:nth-child(1) {
+  transform: rotate(-45deg) translate(-5px, 6px);
+}
+
+.hamburger.active span:nth-child(2) {
+  opacity: 0;
+}
+
+.hamburger.active span:nth-child(3) {
+  transform: rotate(45deg) translate(-5px, -6px);
+}
+
+/* Mobile Styles */
+@media (max-width: 768px) {
+  .nav-container {
+    padding: 1rem;
+    flex-wrap: wrap;
+  }
+  
+  .nav-links {
+    gap: 1rem;
+  }
+  
+  .nav-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background-color: #2c3e50;
+    flex-direction: column;
+    padding: 1rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    z-index: 1000;
+  }
+  
+  .nav-menu.active {
+    display: flex;
+  }
+  
+  .nav-menu .nav-link {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+  
+  .nav-menu .nav-link:last-child {
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+  
+  .nav-user-section {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background-color: #2c3e50;
+    flex-direction: column;
+    padding: 1rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    z-index: 1000;
+    margin-top: -1px; /* Overlap with nav-menu */
+  }
+  
+  .nav-user-section.active {
+    display: flex;
+  }
+  
+  .nav-user-section .nav-user-info {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    color: white;
+  }
+  
+  .nav-user-section .nav-logout-btn {
+    margin-top: 0.5rem;
+    width: 100%;
+    padding: 0.75rem 1rem;
+  }
+  
+  .hamburger {
+    display: flex;
+  }
+  
+  .nav-brand {
+    font-size: 1.25rem;
+  }
+  
+  /* Hide desktop user section on mobile */
+  .nav-user-section:not(.active) {
+    display: none;
+  }
+}
+
+/* Extra small mobile devices */
+@media (max-width: 480px) {
+  .nav-container {
+    padding: 0.75rem;
+  }
+  
+  .nav-brand {
+    font-size: 1.1rem;
+  }
+  
+  .nav-menu,
+  .nav-user-section {
+    padding: 0.75rem;
+  }
+}
+
+/* Mobile responsive content styles */
+@media (max-width: 768px) {
+  /* Form and container adjustments */
+  form {
+    padding: 1.5rem;
+    margin: 1rem;
+  }
+  
+  /* Button adjustments */
+  button {
+    padding: 0.75rem 1rem;
+    font-size: 0.9rem;
+  }
+  
+  /* Input adjustments */
+  input[type="email"],
+  input[type="password"],
+  input[type="text"],
+  input[type="date"] {
+    padding: 0.75rem;
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
+  
+  /* Table responsive */
+  .table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  /* Grid adjustments */
+  .grid-responsive {
+    grid-template-columns: 1fr !important;
+    gap: 1rem !important;
+  }
+  
+  /* Card adjustments */
+  .card-mobile {
+    margin: 1rem;
+    padding: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  /* Extra small adjustments */
+  form {
+    padding: 1rem;
+    margin: 0.5rem;
+  }
+  
+  button {
+    padding: 0.6rem 0.8rem;
+    font-size: 0.85rem;
+  }
+  
+  .card-mobile {
+    margin: 0.5rem;
+    padding: 0.75rem;
+  }
+}
