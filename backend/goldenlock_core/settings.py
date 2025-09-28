@@ -62,7 +62,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'accounts.middleware.CookieDebugMiddleware',  # Make sure this matches the class name
 ]
 
 ROOT_URLCONF = 'goldenlock_core.urls'
@@ -172,18 +171,18 @@ LOGGING = {
     },
     'root': {
         'handlers': ['console'],
-        'level': 'INFO',
+        'level': 'WARNING',
     },
     'loggers': {
         'django': {
             'handlers': ['console'],
-            'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
+            'level': 'WARNING',
             'propagate': False,
         },
-        'accounts': {
+        'django.security': {
             'handlers': ['console'],
-            'level': 'DEBUG',
-            'propagate': True,
+            'level': 'WARNING',
+            'propagate': False,
         },
     },
 }

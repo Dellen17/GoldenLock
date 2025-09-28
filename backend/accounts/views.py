@@ -73,9 +73,6 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
 class CustomTokenObtainPairView(TokenObtainPairView):
     def post(self, request, *args, **kwargs):
         try:
-            logger.info(f"Login attempt for email: {request.data.get('email', 'not provided')}")
-            
-            # Get the response from parent class
             response = super().post(request, *args, **kwargs)
             
             if response.status_code == 200:
@@ -103,13 +100,11 @@ class CustomTokenObtainPairView(TokenObtainPairView):
                     samesite='None'
                 )
 
-                logger.info(f"Login successful for user: {request.data.get('email')}")
                 return response
 
-        except Exception as e:
-            logger.error(f"Login error: {str(e)}")
+        except Exception:
             return Response(
-                {"detail": f"Login failed: {str(e)}"},
+                {"detail": "Login failed. Please check your credentials."},
                 status=400
             )
 

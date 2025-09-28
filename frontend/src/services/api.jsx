@@ -9,29 +9,12 @@ const api = axios.create({
   }
 });
 
-// Add request debugging
-api.interceptors.request.use(request => {
-  if (import.meta.env.DEV) {
-    console.log('Request:', {
-      url: request.url,
-      method: request.method,
-      withCredentials: request.withCredentials,
-      headers: request.headers
-    });
-  }
-  return request;
-});
-
-// Add response debugging
+// Only log non-sensitive errors in production
 api.interceptors.response.use(
   response => response,
   error => {
-    if (error.response) {
-      console.error('Response error:', {
-        status: error.response.status,
-        data: error.response.data,
-        headers: error.response.headers
-      });
+    if (error.response && error.response.status === 401) {
+      window.location.href = '/login';
     }
     return Promise.reject(error);
   }

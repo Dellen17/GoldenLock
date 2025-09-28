@@ -23,13 +23,12 @@ import { useState } from 'react';
        };
 
        const handleSubmit = async (e) => {
-         console.log('handleSubmit called with formData:', formData); // Debug log
          e.preventDefault();
          setLoading(true);
 
          try {
-           const response = await authService.login(formData.email, formData.password);
-           toast.success('Login successful! Redirecting...');
+           await authService.login(formData.email, formData.password);
+           toast.success('Login successful!');
            setFormData({ email: '', password: '' });
            navigate('/dashboard');
          } catch (err) {
