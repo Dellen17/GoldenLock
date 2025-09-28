@@ -192,7 +192,7 @@ const AdminDashboard = () => {
   <h3 style={{ marginBottom: '1rem', color: '#2c3e50' }}>Quick Actions</h3>
   <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
     <button
-      onClick={() => window.location.href = '/admin/users'}
+      onClick={() => navigate('/admin/users')}
       style={{
         padding: '0.75rem 1.5rem',
         backgroundColor: '#007bff',
@@ -205,7 +205,7 @@ const AdminDashboard = () => {
       Manage Users
     </button>
     <button
-      onClick={() => window.location.href = '/admin/users/create'}
+      onClick={() => navigate('/admin/users/create')}
       style={{
         padding: '0.75rem 1.5rem',
         backgroundColor: '#28a745',
@@ -218,7 +218,7 @@ const AdminDashboard = () => {
       Create New User
     </button>
     <button
-      onClick={() => window.location.href = '/admin/login-activities'}
+      onClick={() => navigate('/admin/login-activities')}
       style={{
         padding: '0.75rem 1.5rem',
         backgroundColor: '#17a2b8',

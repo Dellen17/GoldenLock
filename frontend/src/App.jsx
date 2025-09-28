@@ -8,6 +8,7 @@ import Profile from './pages/Profile';
 import AdminDashboard from './pages/AdminDashboard';
 import UserManagement from './pages/UserManagement';
 import UserForm from './pages/UserForm';
+import LoginActivities from './pages/LoginActivities';
 import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
@@ -68,6 +69,14 @@ function App() {
             element={
               <ProtectedRoute adminOnly={true}>
                 <UserForm />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/admin/login-activities" 
+            element={
+              <ProtectedRoute adminOnly={true}>
+                <LoginActivities />
               </ProtectedRoute>
             } 
           />

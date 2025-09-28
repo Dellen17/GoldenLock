@@ -75,8 +75,8 @@ const UserManagement = () => {
   const handleLogout = async () => {
     try {
       await authService.logout();
-      localStorage.removeItem('user');
-      window.location.href = '/login';
+      toast.success('Logged out successfully');
+      navigate('/login');
     } catch (error) {
       console.error('Logout error:', error);
     }
@@ -94,7 +94,7 @@ const UserManagement = () => {
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
           <h1 style={{ color: '#2c3e50' }}>👥 User Management</h1>
           <button
-            onClick={() => window.location.href = '/admin/users/create'}
+            onClick={() => navigate('/admin/users/create')}
             style={{
               padding: '0.75rem 1.5rem',
               backgroundColor: '#28a745',
@@ -263,7 +263,7 @@ const UserManagement = () => {
                       <td style={{ padding: '0.75rem' }}>
                         <div style={{ display: 'flex', gap: '0.5rem' }}>
                           <button
-                            onClick={() => window.location.href = `/admin/users/edit/${user.id}`}
+                            onClick={() => navigate(`/admin/users/edit/${user.id}`)}
                             style={{
                               padding: '0.25rem 0.5rem',
                               backgroundColor: '#17a2b8',
