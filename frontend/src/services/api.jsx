@@ -24,22 +24,14 @@ api.interceptors.request.use(request => {
 
 // Add response debugging
 api.interceptors.response.use(
-  response => {
-    if (import.meta.env.DEV) {
-      console.log('Response:', {
-        status: response.status,
-        headers: response.headers,
-        cookies: document.cookie
-      });
-    }
-    return response;
-  },
+  response => response,
   error => {
-    if (error.response?.status === 401) {
-      // Use proper navigation instead of window.location
-      if (window.location.pathname !== '/login') {
-        window.location.href = '/login';
-      }
+    if (error.response) {
+      console.error('Response error:', {
+        status: error.response.status,
+        data: error.response.data,
+        headers: error.response.headers
+      });
     }
     return Promise.reject(error);
   }
