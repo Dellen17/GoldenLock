@@ -131,7 +131,7 @@ class UserLogoutView(APIView):
     """
     View for user logout. Clears the JWT cookies.
     """
-    permission_classes = () # No specific permissions needed to logout
+    permission_classes = ()
 
     def post(self, request):
         response = Response({"detail": "Successfully logged out."}, status=status.HTTP_200_OK)

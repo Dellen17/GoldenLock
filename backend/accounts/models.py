@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
 from django.utils import timezone
 
-# Custom Manager for our Custom User Model
+# Custom Manager for the Custom User Model
 class CustomUserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
         """
@@ -59,13 +59,13 @@ class User(AbstractBaseUser, PermissionsMixin):
     # Email & Password are required by default. Add any other required fields here.
     REQUIRED_FIELDS = [] 
 
-    # Use our custom manager for this model
+    # Use the custom manager for this model
     objects = CustomUserManager()
 
     def __str__(self):
         return self.email
 
-    # Optional: Helper method to check if a user is an admin
+    # Helper method to check if a user is an admin
     def is_admin(self):
         return self.role == self.Role.ADMIN or self.is_superuser
 
