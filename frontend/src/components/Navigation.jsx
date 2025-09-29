@@ -74,7 +74,7 @@ const Navigation = ({ userRole, onLogout }) => {
         </div>
       </div>
 
-      <div className={`nav-user-section ${isMenuOpen ? 'active' : ''}`}>
+      <div className={`nav-user-section`}>
         <span className="nav-user-info">
           {userRole === 'admin' ? '👑 Admin' : '👤 User'}
         </span>
@@ -85,6 +85,16 @@ const Navigation = ({ userRole, onLogout }) => {
           Logout
         </button>
       </div>
+
+      {/* Mobile-only logout as last item in dropdown */}
+      {isMenuOpen && (
+        <button 
+          onClick={() => { closeMenus(); onLogout(); }}
+          className="nav-logout-btn mobile-logout"
+        >
+          Logout
+        </button>
+      )}
 
       <div className={`hamburger ${isMenuOpen ? 'active' : ''}`} onClick={toggleMenu}>
         <span></span>

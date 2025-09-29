@@ -63,7 +63,7 @@ const AdminDashboard = () => {
 
         {/* Statistics Cards */}
         {stats && (
-          <div style={{ 
+          <div className="grid-responsive" style={{ 
             display: 'grid', 
             gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', 
             gap: '1.5rem', 
@@ -104,9 +104,9 @@ const AdminDashboard = () => {
           </div>
         )}
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
+        <div className="grid-responsive" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
           {/* Recent Users */}
-          <div style={{ 
+          <div className="card-mobile" style={{ 
             backgroundColor: 'white', 
             padding: '1.5rem', 
             borderRadius: '8px',
@@ -114,7 +114,7 @@ const AdminDashboard = () => {
           }}>
             <h3 style={{ marginBottom: '1rem', color: '#2c3e50' }}>Recent Users</h3>
             {recentUsers.length > 0 ? (
-              <div style={{ overflowX: 'auto' }}>
+              <div className="table-responsive" style={{ overflowX: 'auto' }}>
                 <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                   <thead>
                     <tr style={{ backgroundColor: '#f8f9fa' }}>
@@ -147,7 +147,7 @@ const AdminDashboard = () => {
           </div>
 
           {/* Recent Login Activities */}
-          <div style={{ 
+          <div className="card-mobile" style={{ 
             backgroundColor: 'white', 
             padding: '1.5rem', 
             borderRadius: '8px',
@@ -155,7 +155,7 @@ const AdminDashboard = () => {
           }}>
             <h3 style={{ marginBottom: '1rem', color: '#2c3e50' }}>Recent Login Activities</h3>
             {recentLogins.length > 0 ? (
-              <div style={{ overflowX: 'auto' }}>
+              <div className="table-responsive" style={{ overflowX: 'auto' }}>
                 <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                   <thead>
                     <tr style={{ backgroundColor: '#f8f9fa' }}>
